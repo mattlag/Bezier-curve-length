@@ -14,6 +14,15 @@ the length of a Bezier curve.  We can find out how far off each 'quick' method i
 and comparing the results against the recursive result.  Hopefully we can find something that is 
 *close enough*.
 
+# Accuracy Result
+After trying many simple geometric functions, based on the 4 points of a Bezier curve, none of them 
+resulted in very accurate results (as expected).  The closest one was actually just adding up the 
+distance between P1/P2 and P3/P4.  Here is a graph.  Orange is the current best slicing method, and 
+green is the simple adding lengths method.  There is at least a correlation here (which wasn't true 
+for the other methods I tried).  It's more accurate at longer path lengths (right side of the graph).
+
+![Handle Length vs. Slicing](handle_lengths_result.png)
+
 
 ## License
  Copyright (C) 2018 Matthew LaGrandeur, released under
