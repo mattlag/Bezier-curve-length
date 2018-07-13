@@ -9,42 +9,7 @@ let cache = {
 // ---------------------------------
 
 const calculationFunctions = [
-    {
-        name: 'Threshold_1_Length',
-        fn: function(seg){
-            return calculateThresholdLength(seg, 1, true);
-        }
-    },
-    {
-        name: 'Threshold_10_Length',
-        fn: function(seg){
-            return calculateThresholdLength(seg, 10, true);
-        }
-    },
-    {
-        name: 'Threshold_100_Length',
-        fn: function(seg){
-            return calculateThresholdLength(seg, 100, true);
-        }
-    },
-    {
-        name: 'Split_10_Length',
-        fn: function(seg){
-            return calculateSplitLength(seg, 10);
-        }
-    },
-    {
-        name: 'Split_100_Length',
-        fn: function(seg){
-            return calculateSplitLength(seg, 100);
-        }
-    },
-    {
-        name: 'Split_1000_Length',
-        fn: function(seg){
-            return calculateSplitLength(seg, 1000);
-        }
-    },
+/*
     {
         name: 'Handle_Lengths',
         fn: function(seg){
@@ -64,8 +29,92 @@ const calculationFunctions = [
             return re;
         }
     },
+*/
     {
-        name: 'Quadrangle_Length',
+        name: 'Handles_or_Base_Length',
+        fn: function(seg){
+            let h1 = calculateLineLength(
+                {x: seg.p1x, y: seg.p1y},
+                {x: seg.p2x, y: seg.p2y}
+            );
+            let h2 = calculateLineLength(
+                {x: seg.p3x, y: seg.p3y},
+                {x: seg.p4x, y: seg.p4y}
+            );
+            let base = calculateLineLength(
+                {x: seg.p1x, y: seg.p1y},
+                {x: seg.p4x, y: seg.p4y}
+            );
+
+            let re = Math.max((h1+h2), base);
+
+            // if(re === 0) console.log(`Handle_Lengths ${segmentID(seg)}`);
+
+            return re;
+        }
+    },
+    {
+        name: 'Control_Polygon_Perimeter_Average',
+        fn: function(seg){
+            let h1 = calculateLineLength(
+                {x: seg.p1x, y: seg.p1y},
+                {x: seg.p2x, y: seg.p2y}
+            );
+            let h2 = calculateLineLength(
+                {x: seg.p2x, y: seg.p2y},
+                {x: seg.p3x, y: seg.p3y}
+            );
+            let h3 = calculateLineLength(
+                {x: seg.p3x, y: seg.p3y},
+                {x: seg.p4x, y: seg.p4y}
+            );
+            let base = calculateLineLength(
+                {x: seg.p1x, y: seg.p1y},
+                {x: seg.p4x, y: seg.p4y}
+            );
+
+            let top = h1 + h2 + h3;
+
+            let re = (top/2) + (base/2);
+
+            // if(re === 0) console.log(`Three_Side_Length ${segmentID(seg)}`);
+
+            return re;
+        }
+    },
+    {
+        name: 'Perimeter_Average_Error',
+        fn: function(seg){
+            let h1 = calculateLineLength(
+                {x: seg.p1x, y: seg.p1y},
+                {x: seg.p2x, y: seg.p2y}
+            );
+            let h2 = calculateLineLength(
+                {x: seg.p2x, y: seg.p2y},
+                {x: seg.p3x, y: seg.p3y}
+            );
+            let h3 = calculateLineLength(
+                {x: seg.p3x, y: seg.p3y},
+                {x: seg.p4x, y: seg.p4y}
+            );
+            let base = calculateLineLength(
+                {x: seg.p1x, y: seg.p1y},
+                {x: seg.p4x, y: seg.p4y}
+            );
+
+            let top = h1 + h2 + h3;
+            let error = top - base;
+
+            let re = error;
+
+            // if(re === 0) console.log(`Three_Side_Length ${segmentID(seg)}`);
+
+            return re;
+        }
+    },
+/*
+    {
+        name: 'Control_Polygon_Top_Length',
         fn: function(seg){
             let h1 = calculateLineLength(
                 {x: seg.p1x, y: seg.p1y},
@@ -87,6 +136,8 @@ const calculationFunctions = [
             return re;
         }
     },
+*/
+/*  
     {
         name: 'Handle_Area',
         fn: function(seg) {
@@ -96,8 +147,10 @@ const calculationFunctions = [
             return t1+t2;
         }
     },
+*/
+/*  
     {
-        name: 'Quadrangle_Area',
+        name: 'Control_Polygon_Area',
         fn: function(seg) {
             let t1 = calculateTriangleArea({x: 1000, y: 1000}, {x: seg.p2x, y: seg.p2y});
             let t2 = calculateTriangleArea({x: 2000, y: 1000}, {x: seg.p3x, y: seg.p3y});
@@ -107,7 +160,54 @@ const calculationFunctions = [
 
             return t1+t2+q3;
         }
+    },
+*/
+{
+    name: 'Threshold_1_Length',
+    fn: function(seg){
+        return calculateThresholdLength(seg, 1, true);
     }
+},
+/*
+{
+    name: 'Threshold_10_Length',
+    fn: function(seg){
+        return calculateThresholdLength(seg, 10, true);
+    }
+},
+*/
+/*
+{
+    name: 'Threshold_100_Length',
+    fn: function(seg){
+        return calculateThresholdLength(seg, 100, true);
+    }
+},
+*/
+/*
+{
+    name: 'Split_10_Length',
+    fn: function(seg){
+        return calculateSplitLength(seg, 10);
+    }
+},
+*/
+/*
+{
+    name: 'Split_100_Length',
+    fn: function(seg){
+        return calculateSplitLength(seg, 100);
+    }
+},
+*/
+/*
+    {
+        name: 'Split_1000_Length',
+        fn: function(seg){
+            return calculateSplitLength(seg, 1000);
+        }
+    },
+*/
 ];
 
 let testNames = ['Segment'];
@@ -140,10 +240,15 @@ function runCalculations() {
     let segmentsToTest = [quarterCircleSegment];
     let currentTestingSegment = 0;
 
-    for(let p2x=0; p2x<=2000; p2x+=step){
-    for(let p2y=1000; p2y<=2000; p2y+=step){
-    for(let p3x=1000; p3x<=3000; p3x+=step){
-    for(let p3y=1000; p3y<=2000; p3y+=step){
+    let canvas = document.getElementById('resultCanvas');
+    canvas.height = 2000;
+    canvas.width = 3000;
+    let ctx = canvas.getContext('2d');
+
+    for(let p2x=0; p2x<=3000; p2x+=step){
+    for(let p2y=0; p2y<=2000; p2y+=step){
+    for(let p3x=0; p3x<=3000; p3x+=step){
+    for(let p3y=0; p3y<=2000; p3y+=step){
         segmentsToTest.push({
             'p1x': 1000,
             'p1y': 1000,
@@ -173,22 +278,26 @@ function runCalculations() {
         let re = {};
         let test;
 
-        if (!results[segID] && !results[segmentID(getMirror(seg))]){  
+        if (results[segID]) {
+            console.log(`DUPLICATE ${segID}`);
+        // } else if (results[segmentID(getMirror(seg))]) {
+        //     console.log(`MIRROR--- ${segID} ${segmentID(getMirror(seg))}`);
+        } else {
             for (let t=0; t<calculationFunctions.length; t++) {
                 test = calculationFunctions[t];
                 re[test.name] = test.fn(seg);
                 // console.log(`\t${test.name}: ${re[test.name]}`);
             }
             results[segID] = re;
-        } else {
-            // console.log('\tDUPLICATE');
+            drawBezier(seg, ctx);
+            console.log(`ADDED---- ${segID}`);
         }
 
         currentTestingSegment++;
 
         updateProgressBar(currentTestingSegment / segmentsToTest.length);
 
-        window.setTimeout(runOneSegment, 10);
+        window.setTimeout(runOneSegment, 1);
     }
 
 
@@ -211,9 +320,11 @@ function runCalculations() {
         });
 
         let table = '<table><tr>';
+        let csv = '';
         
         for (let t=0; t<testNames.length; t++) {
             table += `<td><b>${testNames[t]}</b></td>`;
+            csv += `${testNames[t]},`;
         }
         
         table += '</tr>';
@@ -222,13 +333,16 @@ function runCalculations() {
 
         for(let r=0; r<sortedResults.length; r++) {
             table += `<tr>`;
+            csv += '\n';
             oneResult = sortedResults[r];
             
             for (let n=0; n<testNames.length; n++) {
                 if(testNames[n] === 'Segment'){
                     table += `<td class="namecol">${oneResult['Segment']}</td>`;
+                    csv += `${oneResult['Segment']},`;
                 } else {
                     table += `<td title="${testNames[n]}\n${oneResult[testNames[n]]}">${round(oneResult[testNames[n]], 6)}</td>`;
+                    csv += `${oneResult[testNames[n]]},`;
                 }
             }
             
@@ -238,7 +352,7 @@ function runCalculations() {
         table += '</table>';
         
         document.getElementById('results').innerHTML = table;
-
+        saveFile('Bezier-curve-results.csv', csv);
         // console.log('finishOutput - end');
     }
 
@@ -247,7 +361,45 @@ function runCalculations() {
     runOneSegment();
 }
 
+/**
+ * Draw a segment to a canvas
+ * @param {object} seg - segment point data
+ * @param {object} ctx - drawing context
+ */
+function drawBezier(seg, ctx) {
+    ctx.strokeStyle = 'rgba(0, 20, 50, 0.01)';
+    ctx.lineCap = 'round';
+    ctx.moveTo(seg.p1x, seg.p1y);
+    ctx.bezierCurveTo(seg.p2x, seg.p2y, seg.p3x, seg.p3y, seg.p4x, seg.p4y);
+    ctx.stroke();
+}
 
+/**
+ * Saves a file
+ * @param {string} fname - name for the saved file
+ * @param {string} buffer - data for the file
+ * @param {string} ftype - file suffix
+ */
+function saveFile(fname, buffer, ftype) {
+    ftype = ftype || 'text/plain;charset=utf-8';
+    let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
+
+    try {
+        // IE
+        window.navigator.msSaveBlob(fblob, fname);
+    } catch (err) {
+        // Others
+        let link = document.createElement('a');
+        window.URL = window.URL || window.webkitURL;
+        link.href = window.URL.createObjectURL(fblob);
+        // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
+        link.download = fname;
+
+        let event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, false);
+        link.dispatchEvent(event);
+    }
+}
 
 // ---------------------------------
 // Helpers
@@ -271,7 +423,7 @@ function lineID(p1, p2) {
  */
 function segmentID(seg) {
     // return `${seg.p1x},${seg.p1y}|${seg.p2x},${seg.p2y}|${seg.p3x},${seg.p3y}|${seg.p4x},${seg.p4y}`;
-    return `${seg.p2x},${seg.p2y}__${seg.p3x},${seg.p3y}`;
+    return `${seg.p2x}_${seg.p2y}__${seg.p3x}_${seg.p3y}`;
 }
 
 /**
